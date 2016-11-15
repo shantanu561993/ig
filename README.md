@@ -3,7 +3,7 @@
 
 Let's create a python project for dns information gathering. Information tree:
 
-|**idns - passive mode **|methods|description|
+|**idns - passive mode**|methods|description|
 |:-----------------------|:----------|:--------------|
 |dns query|A|***Address record***, Returns a 32-bit IPv4 address, most commonly used to map hostnames to an IP address of the host, but it is also used for DNSBLs, storing subnet masks in RFC 1101, etc.|
 |dns query|CNAME|***Canonical name record***, Alias of one name to another: the DNS lookup will continue by retrying the lookup with the new name.|
@@ -34,7 +34,7 @@ Let's create a python project for dns information gathering. Information tree:
 |OSInt|Censys|Search domains from censys|
 |OSInt|ZoomEye|Search domains from ZoomEye|
 ||||
-|**idns - offensive mode **|**methods**|**description**|
+|**idns - offensive mode**|**methods**|**description**|
 |Websites|Spider default page|Scan default pages and spider domains|
 |Websites|Certificates|Scan domains certificates|
 
