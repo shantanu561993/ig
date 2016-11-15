@@ -7,6 +7,7 @@ import dns.query
 import dns.zone
 import dns.dnssec
 import dns.reversename
+import randoms
 
 
 __class__ = ['idns']
@@ -52,6 +53,29 @@ class idns(object):
         except:
             pass
         return result
+
+    def dns_wildcard(self, domain):
+        """Check if dns wildcard is enable. A wildcard DNS record is a record
+        in a DNS zone that will match requests for non-existent domain names.
+        References:
+            https://en.wikipedia.org/wiki/Wildcard_DNS_record
+            https://tools.ietf.org/html/rfc1034
+        """
+        wild_domain = "*.{}".format(domain)
+        wild_result = self.query_A(wild_domain)[wild_domain]['A']
+        if wild_result:
+            print("{} has probably a (*) wildcard".format(domain))
+            return True
+
+        rand_prefix = randoms.rand_text_alpha(32)
+        rand_domain = "{}.{}".format(rand_prefix, domain)
+        rand_result = self.query_A(rand_domain)[rand_domain]['A']
+        if rand_result:
+            print("{} has probably a (rand) wildcard".format(domain))
+            return True
+
+        print("{} does not really have wildcards".format(domain))
+        return False
 
     def query_A(self, domain):
         """query DNS A records.
@@ -173,6 +197,8 @@ def demo():
     data = {}
     xdns = idns()
     domain = 'zonetransfer.me'
+
+    xdns.dns_wildcard(domain)  # dns wildcard checks
 
     data[domain] = {}
     data[domain].update(xdns.query_A(domain)[domain])
