@@ -85,17 +85,14 @@ class BaseWorker(object):
         self.install_signal_handlers()
 
         while True:
-            self.spawn_child()
-            if self._exitpool:  # set _exitpool status
+            try:
+                self.spawn_child()
+                if self._exitpool:  # set _exitpool status
+                    self.terminate_idle_children()
+                    break
+            except KeyboardInterrupt:
                 self.terminate_idle_children()
                 break
-
-            # exit gevent worker with Ctrl + C
-            # try:
-            #     self.spawn_child()
-            # except KeyboardInterrupt:
-            #     self.terminate_idle_children()
-            #     break
 
         try:
             self.wait_for_children()
