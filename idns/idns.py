@@ -34,6 +34,8 @@ class idns(object):
         param: dns_timeout
             dns response timeout
         """
+        super(idns, self).__init__()
+
         if ns_server:
             self._idns = dns.resolver.Resolver(configure=False)
             self._idns.nameservers = ns_server
@@ -190,8 +192,8 @@ class idns(object):
         return {ip: {'PTR': data}}
 
 
-def demo():
-    """Just a demo test"""
+def demo_idns():
+    """Just a demo test for class idns"""
     from pprint import pprint
 
     data = {}
@@ -214,7 +216,7 @@ def demo():
 
 
 if __name__ == '__main__':
-    demo()
+    demo_idns()
 
 # Thanks:
 #    https://digi.ninja/projects/zonetransferme.php
