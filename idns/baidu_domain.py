@@ -27,14 +27,14 @@ class spider(baidu):
                     continue
                 bd_domains.append(_)
 
-        return bd_domains
+        return {domain: {'baidu': bd_domains}}
 
 
 def demo_spider():
     """A demo for spider class"""
     domain = "google.com"
     sp = spider()
-    sp.parse(domain)
+    print sp.parse(domain)
 
 
 if __name__ == "__main__":
