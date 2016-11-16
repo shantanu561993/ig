@@ -1,1 +1,4 @@
 dnspython==1.15.0
+gevent==1.1.2
+greenlet==0.4.10
+requests==2.12.0
