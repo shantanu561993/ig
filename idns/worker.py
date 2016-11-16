@@ -85,11 +85,17 @@ class BaseWorker(object):
         self.install_signal_handlers()
 
         while True:
-            try:
-                self.spawn_child()
-            except KeyboardInterrupt:
+            self.spawn_child()
+            if self._exitpool:  # set _exitpool status
                 self.terminate_idle_children()
                 break
+
+            # exit gevent worker with Ctrl + C
+            # try:
+            #     self.spawn_child()
+            # except KeyboardInterrupt:
+            #     self.terminate_idle_children()
+            #     break
 
         try:
             self.wait_for_children()
@@ -109,9 +115,9 @@ class BaseWorker(object):
         and this method is invoked to do the actual blocking wait and the
         execution of the job.
         """
-        #busy_flag.clear()  # Not really necessary, but explicit
+        # busy_flag.clear()  # Not really necessary, but explicit
         # job = self.fake_blpop()
-        #busy_flag.set()
+        # busy_flag.set()
         mark_busy()
         # job()  # fake perform job
         self.fake_job()
@@ -121,9 +127,10 @@ class GeventWorker(BaseWorker):
 
     ##
     # Overridden from BaseWorker
-    def __init__(self, num_processes=1):
+    def __init__(self, num_processes=16):
         super(GeventWorker, self).__init__()
         self._pool = gevent.pool.Pool(num_processes)
+        self._exitpool = False
 
         # In this dictionary, we keep a greenlet -> Event mapping to indicate
         # whether that greenlet is in idle or busy state.  Greenlets that are
@@ -151,9 +158,10 @@ class GeventWorker(BaseWorker):
                 flag.set()
             return _inner
 
-        child_greenlet = self._pool.spawn(self.main_child, _mark_busy(busy_flag))
-        self._busy[child_greenlet] = busy_flag
-        child_greenlet.link(self._cleanup_busy_flag)
+        if not self._exitpool:
+            child_greenlet = self._pool.spawn(self.main_child, _mark_busy(busy_flag))
+            self._busy[child_greenlet] = busy_flag
+            child_greenlet.link(self._cleanup_busy_flag)
 
     def terminate_idle_children(self):
         print 'Find all children that are in idle state (waiting for work)...'
