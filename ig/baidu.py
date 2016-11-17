@@ -5,14 +5,15 @@ import requests
 import time
 import lxml.etree
 import randoms
+from searchengine import searchengine
 
 
-class baidu(object):
+class baidu(searchengine):
     """Search resources from Baidu searchengine, include titles/urls/bodys"""
     def __init__(self):
         super(baidu, self).__init__()
 
-    def dork_search(self, dork, page=0, random_sleep=True):
+    def baidu_dork_search(self, dork, page=0, random_sleep=True):
         """Search dorks from baidu pages"""
         resources = []  # title, res_href, baidu_link
         indexs = range(page + 1)

@@ -6,14 +6,15 @@ import time
 import lxml.etree
 import randoms
 import re
+from searchengine import searchengine
 
 
-class yahoo(object):
+class yahoo(searchengine):
     """Search resources from yahoo searchengine, include titles/urls."""
     def __init__(self):
         super(yahoo, self).__init__()
 
-    def dork_search(self, dork, page=0, random_sleep=True):
+    def yahoo_dork_search(self, dork, page=0, random_sleep=True):
         """Search dorks from yahoo pages"""
         resources = []
         indexs = range(page + 1)

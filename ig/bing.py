@@ -5,14 +5,15 @@ import requests
 import time
 import lxml.etree
 import randoms
+from searchengine import searchengine
 
 
-class bing(object):
+class bing(searchengine):
     """Search resources from Bing searchengine, include titles/urls/bodys"""
     def __init__(self):
         super(bing, self).__init__()
 
-    def dork_search(self, dork, page=0, random_sleep=True):
+    def bing_dork_search(self, dork, page=0, random_sleep=True):
         """Search dorks from bing pages"""
         resources = []  # title, res_href, bing_link
         indexs = range(page + 1)
