@@ -108,6 +108,13 @@ class domainspider(baidu_domain_spider,
 
 
 if __name__ == '__main__':
-    domain = 'google.com'
+    import sys
+
+    if len(sys.argv) != 2:
+        print("{} <domain> : search subdomains".format(sys.argv[0]))
+        sys.exit(0)
+
+    domain = sys.argv[1]
+    print("[+] collecting {} subdomains....".format(domain))
     ds = domainspider()
-    print(ds.search(domain, page=1, random_sleep=True))
+    print(ds.search(domain, page=10, random_sleep=True))
