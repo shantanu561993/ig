@@ -9,11 +9,11 @@ class spider(bing):
     def __init__(self):
         super(spider, self).__init__()
 
-    def parse(self, domain):
+    def domain_search(self, domain, page=2, random_sleep=False):
         """parse domains from bing spider results"""
         dork = "site:{}".format(domain)
         regex = re.compile('[a-zA-Z0-9]+\.{}'.format(domain), re.I | re.M)
-        results = self.dork_search(dork, page=2, random_sleep=False)
+        results = self.dork_search(dork, page=page, random_sleep=random_sleep)
         data = results[dork]  # [['title', 'href']]
         bi_domains = []
 
@@ -34,7 +34,7 @@ def demo_spider():
     """A demo for spider class"""
     domain = "google.com"
     sp = spider()
-    print(sp.parse(domain))
+    print(sp.domain_search(domain))
 
 
 if __name__ == "__main__":
