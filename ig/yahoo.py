@@ -45,7 +45,7 @@ class yahoo(object):
             # Avoid yahoo.com banning spider ip, sleep during 1...n (not 1, n)
             if random_sleep and len(indexs) > 1 and index != indexs[-1]:
                 rt = randoms.rand_item_from_iters([_ for _ in range(1, 8)])
-                print("sleeping {} s to avoid baidu...".format(rt))
+                print("sleeping {} s to avoid yahoo...".format(rt))
                 time.sleep(int(rt))
 
         return {dork: resources}
