@@ -57,7 +57,12 @@ def demo_baidu():
     """A demo test for baidu class"""
     bd = baidu()
     dork = 'site:google.com'
-    bd.dork_search(dork, page=3)
+    data = bd.baidu_dork_search(dork, page=1)
+    for title, href, link in data[dork]:
+        print(title)
+        print(href)
+        print('\n-----------\n')
+
 
 if __name__ == "__main__":
     demo_baidu()
