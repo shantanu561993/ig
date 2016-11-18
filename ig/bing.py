@@ -57,7 +57,11 @@ def demo_bing():
     """A demo test for bing class"""
     bi = bing()
     dork = 'site:google.com'
-    print bi.dork_search(dork, page=1)
+    data = bi.bing_dork_search(dork, page=1)
+    for title, href in data[dork]:
+        print(title)
+        print(href)
+        print('\n-----------\n')
 
 
 if __name__ == "__main__":
