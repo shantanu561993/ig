@@ -64,7 +64,11 @@ def demo_yahoo():
     """A demo test for yahoo class"""
     yh = yahoo()
     dork = 'site:google.com'
-    print(yh.dork_search(dork, page=3))
+    data = yh.yahoo_dork_search(dork, page=1)
+    for title, href in data[dork]:
+        print(title)
+        print(href)
+        print('\n-----------\n')
 
 
 if __name__ == "__main__":
