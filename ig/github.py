@@ -72,7 +72,7 @@ class github(searchengine):
         param: order: The sort order if sort parameter is provided.
                       One of asc or desc. Default: desc
         """
-        api_url = 'https://api.github.com/search/issues'
+        api_url = 'https://api.github.com/search/users'
         return self.github_api_search(api_url, dork, sort, order)
 
 
@@ -99,7 +99,7 @@ def demo_github():
     parse_html_url(gh.search_issues(dork))
 
     print('----Search users----')
-    dork = 'metasploit-framework'
+    dork = 'rapid7'
     parse_html_url(gh.search_users(dork))
 
 if __name__ == '__main__':
