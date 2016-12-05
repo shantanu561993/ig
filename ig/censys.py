@@ -4,7 +4,6 @@
 
 from searchengine import searchengine
 import requests
-import json
 
 
 class censys(object):
@@ -25,8 +24,8 @@ class censys(object):
         api doc: https://censys.io/api/v1/docs/search
         """
         censys_api = 'https://www.censys.io/api/v1/search/{}'.format(dorktype)
-        query = json.dumps({'query': dork, 'page': page})
-        return requests.post(censys_api, auth=(uid, secret), data=query)
+        query = {'query': dork, 'page': page}
+        return requests.post(censys_api, auth=(uid, secret), json=query)
 
     def parse_results(self, response):
         """parse censys results
