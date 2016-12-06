@@ -124,7 +124,7 @@ class GeventWorker(BaseWorker):
 
     ##
     # Overridden from BaseWorker
-    def __init__(self, num_processes=16):
+    def __init__(self, num_processes=50):
         super(GeventWorker, self).__init__()
         self._pool = gevent.pool.Pool(num_processes)
         self._exitpool = False

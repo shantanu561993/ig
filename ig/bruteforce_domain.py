@@ -10,6 +10,7 @@ class idns_bruteforce(idns, GeventWorker):
     def __init__(self, domain='google.com', subdomains_wd='subdomains.txt'):
         super(idns_bruteforce, self).__init__()
         self.domain = domain
+        self.domains = []
         self.subdomains_wd = open(subdomains_wd)
         self.dns_wildcard(self.domain)  # check dns wildcard
 
@@ -22,6 +23,8 @@ class idns_bruteforce(idns, GeventWorker):
         subdomain = "{}.{}".format(prefix, self.domain)
         data = self.query_A(subdomain)[subdomain]['A']
         print({subdomain: {'A': data}})
+        if data:
+            self.domains.append({subdomain: {'A': data}})
         return {subdomain: {'A': data}}
 
 
