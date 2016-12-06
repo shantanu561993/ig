@@ -45,8 +45,12 @@ class zoomeye(searchengine):
         data = '{{"username": "{}", "password": "{}"}}'.format(self.username,
                                                                self.password)
         resp = requests.post(self.zoomeye_login_api, data=data)
-        if resp and resp.status_code == 200 and 'access_token' in resp.json():
+        if not resp:
+            print('[!] no login response received')
+        elif resp.status_code == 200 and 'access_token' in resp.json():
             self.token = resp.json().get('access_token')
+        else:
+            print(resp.text)
         return self.token
 
     def zoomeye_dork_search(self, dork, page=0, resource='web', facet=['ip']):
