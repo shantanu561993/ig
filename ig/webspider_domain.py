@@ -4,6 +4,7 @@
 from bing import bing
 from baidu import baidu
 from yahoo import yahoo
+from google import google
 import re
 
 
@@ -83,6 +84,32 @@ class yahoo_domain_spider(yahoo):
                 yh_domains.append(_)
 
         return {domain: {'yahoo': yh_domains}}
+
+
+class google_domain_spider(google):
+    def __init__(self):
+        super(google_domain_spider, self).__init__()
+
+    def google_domain_search(self, domain, pages=2, random_sleep=True):
+        """parse domains from google spider results"""
+        dork = "site:{}".format(domain)
+        regex = re.compile('[a-zA-Z0-9]+\.{}'.format(domain), re.I | re.M)
+        results = self.google_dork_search(dork, page=page, random_sleep=True)
+
+        data = results[dork]
+        gg_domains = []
+
+        if not data:
+            return {domain: {'google': gg_domains}}
+
+        for title, href, link in data:
+            domains = regex.findall(href)
+            for _ in domains:
+                if _ in gg_domains:
+                    continue
+                gg_domains.append(_)
+
+        return {domain: {'google': gg_domains}}
 
 
 class domainspider(baidu_domain_spider,
