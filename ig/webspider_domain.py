@@ -5,6 +5,7 @@ from bing import bing
 from baidu import baidu
 from yahoo import yahoo
 from google import google
+from netcraft import netcraft
 import re
 
 
@@ -110,6 +111,16 @@ class google_domain_spider(google):
                 gg_domains.append(_)
 
         return {domain: {'google': gg_domains}}
+
+
+class netcraft_domain_spider(netcraft):
+    def __init__(self):
+        super(netcraft_domain_spider, self).__init__()
+
+    def netcraft_domain_search(self, domain, page=0, random_sleep=True):
+        nt_domains = self.domain_search(domain, page=page,
+                                        random_sleep=random_sleep)
+        return {domain: {'netcraft': nt_domains}}
 
 
 class domainspider(baidu_domain_spider,
