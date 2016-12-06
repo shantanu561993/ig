@@ -6,6 +6,7 @@ from baidu import baidu
 from yahoo import yahoo
 from google import google
 from netcraft import netcraft
+from zoomeye import zoomeye
 import re
 
 
@@ -121,6 +122,20 @@ class netcraft_domain_spider(netcraft):
         nt_domains = self.domain_search(domain, page=page,
                                         random_sleep=random_sleep)
         return {domain: {'netcraft': nt_domains}}
+
+
+class zoomeye_domain_spider(zoomeye):
+    def __init__(self, username, password):
+        super(zoomeye_domain_spider, self).__init__(username, password)
+        self.username = username
+        self.password = password
+        self.login()
+
+    def zoomeye_domain_search(self, domain, page=0):
+        dork = 'site:{}'.format(domain)
+        data = self.zoomeye_dork_search(dork, page=page, resource='web')
+        zm_domains = [_['site'] for _ in data]
+        return {domain: {'zoomeye': zm_domains}}
 
 
 class domainspider(baidu_domain_spider,
