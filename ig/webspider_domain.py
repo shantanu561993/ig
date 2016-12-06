@@ -7,7 +7,10 @@ from yahoo import yahoo
 from google import google
 from netcraft import netcraft
 from zoomeye import zoomeye
+from censys import censys
+from github import github
 import re
+import requests
 
 
 class baidu_domain_spider(baidu):
@@ -136,6 +139,60 @@ class zoomeye_domain_spider(zoomeye):
         data = self.zoomeye_dork_search(dork, page=page, resource='web')
         zm_domains = [_['site'] for _ in data]
         return {domain: {'zoomeye': zm_domains}}
+
+
+class censys_domain_spider(censys):
+    def __init__(self, uid, secret):
+        super(censys_domain_spider, self).__init__()
+        self.uid = uid
+        self.secret = secret
+
+    def censys_domain_search(self, domain, page=0):
+        dork = domain
+        dorktype = 'certificates'
+        cs_domains = []
+        regex = re.compile('[a-zA-Z0-9]+\.{}'.format(domain), re.I | re.M)
+        for _page in range(page):
+            data = self.censys_dork_search(
+                self.uid, self.secret, domain, dorktype, page=page)
+            status, results, metadata = self.parse_results(data)
+            for result in results:
+                item = result['parsed.subject_dn']
+                item = ''.join(item)
+                domains = regex.findall(item)
+                for _ in domains:
+                    if _ in cs_domains:
+                        continue
+                    cs_domains.append(_)
+        return {domain: {'censys': cs_domains}}
+
+
+class github_domain_spider(github):
+    def __init__(self):
+        super(github_domain_spider, self).__init__()
+
+    def github_domain_search(self, domain):
+        gt_domains = []  # github search domain is too slow.
+        regex = re.compile('[a-zA-Z0-9]+\.{}'.format(domain), re.I | re.M)
+        total_count, incomplete_results, items = self.search_repositories(
+            domain)
+        links = []
+        for item in items:  # repo or user is a must.
+            dork = '{} in:file repo:{}'.format(domain, item['full_name'])
+            total_count, incomplete_results, items = self.search_code(domain)
+            for item in items:
+                link = item['html_url']
+                if link not in links:
+                    links.append(link)
+
+        for link in links:
+            resp = requests.get(link)
+            domains = regex.findall(resp.text)
+            for _ in domains:
+                if _ in gt_domains:
+                    continue
+                gt_domains.append(_)
+        return {domain: {'github': gt_domains}}
 
 
 class domainspider(baidu_domain_spider,
