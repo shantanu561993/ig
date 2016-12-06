@@ -20,9 +20,20 @@ class github(searchengine):
         response = requests.get(api_url, params=params)
         response_json = response.json()
 
-        total_count = response_json['total_count']
-        incomplete_results = response_json['incomplete_results']
-        items = response_json['items']
+        if 'total_count' in response_json:
+            total_count = response_json['total_count']
+        else:
+            total_count = []
+
+        if 'incomplete_results' in response_json:
+            incomplete_results = response_json['incomplete_results']
+        else:
+            incomplete_results = []
+
+        if 'items' in response_json:
+            items = response_json['items']
+        else:
+            items = []
 
         return total_count, incomplete_results, items
 
