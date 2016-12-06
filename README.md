@@ -38,6 +38,196 @@ Let's create a python project for dns information gathering. Information tree:
 |Websites|Spider default page|Scan default pages and spider domains|
 |Websites|Certificates|Scan domains certificates|
 
+# How to gather information with automation tools ?
+
+In order to solve time, The tool called [**ig**](https://github.com/nixawk/ig/) is created. You don't need to gather information manually (from browsers, or something else)
+
+```
+Usage: python ig.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+
+  DOMAIN INFORMATION:
+    scan domains/subdomains information
+
+    -d DOMAIN, --domain=DOMAIN
+                        domain name
+    --bruteforce        brute force subdomains
+    --wordlist=WORDLIST
+                        wordlist for subdomains bruteforce
+    --pages=PAGES       pages number to spider
+    --sleep             enable sleep to bypass spider ban
+    --baidu             search domains from baidu.com
+    --bing              search domains from bing.com
+    --google            search domains from google.com
+    --yahoo             search domains from yahoo.com
+    --censys            search domains from censys.io
+    --censys_uid=CENSYS_UID
+                        a censys api id
+    --censys_secret=CENSYS_SECRET
+                        a censys api secret
+    --github            search domains from github.com
+    --netcraft          search domains from netcraft.com
+    --zoomeye           search domains from zoomeye.org
+    --zoomeye_username=ZOOMEYE_USERNAME
+                        a zoomeye username
+    --zoomeye_password=ZOOMEYE_PASSWORD
+                        a zoomeye password
+```
+
+## How to search domains from searchengines ?
+
+If you want to spider domains from searchengines, **--pages** is a must. Please try the following examples.
+
+```
+(ig)  ->> python ig.py -d google.com --pages 2 --baidu --bing --yahoo
+[*] search domains from baidu.com
+{'google.com': {'baidu': [u'www.google.com',
+                          u'news.google.com',
+                          u'cloud.google.com',
+                          u'feedburner.google.com',
+                          u'play.google.com',
+                          u'drive.google.com',
+                          u'helpouts.google.com',
+                          u'books.google.com']}}
+[*] search domains from bing.com
+{'google.com': {'bing': ['www.google.com',
+                         'earth.google.com',
+                         'scholar.google.com',
+                         'accounts.google.com',
+                         'images.google.com',
+                         'news.google.com',
+                         'developers.google.com',
+                         'photos.google.com',
+                         'books.google.com',
+                         'hangouts.google.com',
+                         'translate.google.com',
+                         'docs.google.com',
+                         'myactivity.google.com',
+                         'code.google.com',
+                         'm.google.com',
+                         'gsuite.google.com',
+                         'bookmarks.google.com',
+                         'sandbox.google.com',
+                         'fiber.google.com',
+                         'picasa.google.com',
+                         'desktop.google.com',
+                         'orkut.google.com']}}
+[*] search domains from yahoo.com
+{'google.com': {'yahoo': ['translate.google.com',
+                          'www.google.com',
+                          'search.google.com',
+                          'desktop.google.com',
+                          'support.google.com',
+                          'adwords.google.com',
+                          'mapmaker.google.com',
+                          'doodles.google.com']}}
+[+] all domains as follow:
+[u'www.google.com',
+ u'news.google.com',
+ u'cloud.google.com',
+ u'feedburner.google.com',
+ u'play.google.com',
+ u'drive.google.com',
+ u'helpouts.google.com',
+ u'books.google.com',
+ 'www.google.com',
+ 'earth.google.com',
+ 'scholar.google.com',
+ 'accounts.google.com',
+ 'images.google.com',
+ 'news.google.com',
+ 'developers.google.com',
+ 'photos.google.com',
+ 'books.google.com',
+ 'hangouts.google.com',
+ 'translate.google.com',
+ 'docs.google.com',
+ 'myactivity.google.com',
+ 'code.google.com',
+ 'm.google.com',
+ 'gsuite.google.com',
+ 'bookmarks.google.com',
+ 'sandbox.google.com',
+ 'fiber.google.com',
+ 'picasa.google.com',
+ 'desktop.google.com',
+ 'orkut.google.com',
+ 'translate.google.com',
+ 'www.google.com',
+ 'search.google.com',
+ 'desktop.google.com',
+ 'support.google.com',
+ 'adwords.google.com',
+ 'mapmaker.google.com',
+ 'doodles.google.com']
+```
+
+## How to brute force subdomains ?
+
+Subdomains bruteforce is a good way to discover something hidden. I've created a gevent worker for the job. Wish you happy.
+
+```
+(ig) ->> python ig.py -d google.com --bruteforce
+[!] bruteforce domain may cost long time
+[!] use default wordlist to bruteforce subdomains
+google.com does not really have wildcards
+{'www.google.com': {'A': [u'216.58.196.228']}}
+{'mail.google.com': {'A': [u'74.125.203.18', u'74.125.203.19', u'74.125.203.83', u'74.125.203.17']}}
+{'ns2.google.com': {'A': [u'216.239.34.10']}}
+{'news.google.com': {'A': [u'216.58.197.14']}}
+{'calendar.google.com': {'A': [u'74.125.23.113', u'74.125.23.100', u'74.125.23.102', u'74.125.23.138', u'74.125.23.101', u'74.125.23.139']}}
+{'ftp.google.com': {'A': []}}
+{'smtp.google.com': {'A': []}}
+{'pop.google.com': {'A': []}}
+{'m.google.com': {'A': []}}
+{'webmail.google.com': {'A': []}}
+......
+bruteforce log....
+....
+['www.google.com',
+ 'mail.google.com',
+ 'ns2.google.com',
+ 'news.google.com',
+ 'calendar.google.com',
+ 'docs.google.com',
+ 'ns4.google.com',
+ 'images.google.com',
+ 'api.google.com',
+ 'apps.google.com',
+ 'tools.google.com',
+ 'sites.google.com',
+ 'dl.google.com',
+ 'feeds.google.com',
+ 'groups.google.com',
+ 'map.google.com',
+ 'maps.google.com',
+ 'accounts.google.com',
+ 'investor.google.com',
+ 'doc.google.com',
+ 'id.google.com',
+ 'whois.google.com',
+ 'enterprise.google.com',
+ 'asia.google.com',
+ 'history.google.com',
+ 'developers.google.com',
+ 'earth.google.com',
+ 'drive.google.com',
+ 'play.google.com',
+ 'talk.google.com',
+ 'plus.google.com',
+ 'pki.google.com',
+ 'publish.google.com',
+ 'fusion.google.com',
+ 'chrome.google.com',
+ 'apis.google.com',
+ 'pack.google.com',
+ 'purchase.google.com',
+ 'dai.google.com']
+```
+
+
 # Links
 
 1. https://en.wikipedia.org/wiki/List_of_DNS_record_types
