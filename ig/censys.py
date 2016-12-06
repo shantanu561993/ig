@@ -6,7 +6,7 @@ from searchengine import searchengine
 import requests
 
 
-class censys(object):
+class censys(searchengine):
     def __init__(self):
         super(censys, self).__init__()
 

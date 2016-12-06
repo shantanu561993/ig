@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from searchengine import searchengine
 import requests
 import time
 import lxml.etree
 import randoms
 
 
-class google(object):
+class google(searchengine):
     """Search resources from Google searchengine, include titles/urls/bodys"""
     def __init__(self):
         super(google, self).__init__()
 
-    def dork_search(self, dork, page=0, random_sleep=True):
+    def google_dork_search(self, dork, page=0, random_sleep=True):
         """Search dorks from google pages"""
         resources = []
         indexs = range(page + 1)
@@ -51,7 +52,7 @@ def demo_google():
     """A demo test for google class"""
     gg = google()
     dork = 'site:google.com'
-    print(gg.dork_search(dork, page=0))
+    print(gg.google_dork_search(dork, page=0))
 
 
 if __name__ == "__main__":
