@@ -129,7 +129,8 @@ def main():
 
     if args.bing:
         print('[*] search urls from bing.com')
-        uspider.bing_url_search(dork, pages, random_sleep=sleep)
+        for dork in dorks:
+            uspider.bing_url_search(dork, pages, random_sleep=sleep)
 
     if args.yahoo:
         print('[*] search urls from yahoo.com')
