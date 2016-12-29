@@ -20,7 +20,7 @@ class bing(searchengine):
         for index in indexs:
             req = requests.Session()
             req.cookies['SRCHHPGUSR'] = 'NEWWND=0&NRSLT=50&SRCHLANG=&AS=1'
-            url = 'http://www.bing.com/search'
+            url = 'https://www.bing.com/search'
             headers = {'User-Agent': 'Mozilla/5.0'}
             params = {'first': index, 'q': dork}
             resp = req.get(url, params=params,
