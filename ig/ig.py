@@ -5,6 +5,7 @@ from optparse import OptionParser
 from optparse import OptionGroup
 from optparse import OptionError
 import sys
+from idns import idns
 from webspider_domain import baidu_domain_spider
 from webspider_domain import bing_domain_spider
 from webspider_domain import yahoo_domain_spider
@@ -28,6 +29,24 @@ class cmdline(object):
                                     "scan domains/subdomains information")
             domainopt.add_option('-d', '--domain', dest='domain', type='str',
                                  help='domain name')
+            domainopt.add_option('--query_a', action='store_true',
+                                 help='query dns A records')
+            domainopt.add_option('--query_cname', action='store_true',
+                                 help='query dns CNAME records')
+            domainopt.add_option('--query_mx', action='store_true',
+                                 help='query dns MX records')
+            domainopt.add_option('--query_ns', action='store_true',
+                                 help='query dns NS records')
+            domainopt.add_option('--query_soa', action='store_true',
+                                 help='query dns SOA records')
+            domainopt.add_option('--query_srv', action='store_true',
+                                 help='query dns SRV records')
+            domainopt.add_option('--query_txt', action='store_true',
+                                 help='query dns TXT records')
+            domainopt.add_option('--query_axfr', action='store_true',
+                                 help='query dns AXFR records')
+            domainopt.add_option('--enable_wildcard', action='store_true',
+                                 help='check if dns wildcard exists (default: disable)')
             domainopt.add_option('--bruteforce', action='store_true',
                                  help='brute force subdomains')
             domainopt.add_option('--wordlist', dest='wordlist', type='str',
@@ -69,6 +88,7 @@ class cmdline(object):
             return args
 
 
+
 def main():
     """parse cmdline options
     """
@@ -81,6 +101,49 @@ def main():
         sys.exit(0)
 
     domain = args.domain
+    dnsqry = idns()
+
+    result = {}
+    result[domain] = {}
+
+    if args.query_a:
+        data = dnsqry.query_A(domain)
+        result[domain].update(data[domain])
+
+    if args.query_cname:
+        data = dnsqry.query_CNAME(domain)
+        result[domain].update(data[domain])
+
+    if args.query_mx:
+        data = dnsqry.query_MX(domain)
+        result[domain].update(data[domain])
+
+    if args.query_ns:
+        data = dnsqry.query_NS(domain)
+        result[domain].update(data[domain])
+
+    if args.query_soa:
+        data = dnsqry.query_SOA(domain)
+        result[domain].update(data[domain])
+
+    if args.query_srv:
+        data = dnsqry.query_SRV(domain)
+        result[domain].update(data[domain])
+
+    if args.query_txt:
+        data = dnsqry.query_TXT(domain)
+        result[domain].update(data[domain])
+
+    if args.query_axfr:  # If no axfr records, pleae try to read query_AXFR code
+        try:
+            data = dnsqry.query_AXFR(domain)
+        except Exception as err:
+            import traceback
+            traceback.print_exc(err)
+        result[domain].update(data[domain])
+
+    if args.enable_wildcard:
+        dnsqry.dns_wildcard(domain)
 
     if args.bruteforce:
         print('[!] bruteforce domain may cost long time')
@@ -94,13 +157,17 @@ def main():
         for item in idns_bt.domains:
             idns_btret.extend(item.keys())
         domains.extend(idns_btret)
-        pprint(idns_btret)
 
-    if not args.pages:
-        print('[!] please set pages num to spider domains from searchengine')
-        sys.exit(0)
+        # merge domain bruteforce records
+        result[domain].update({'BRUTEFORCE': domains})
+        # pprint(idns_btret)
 
-    pages = args.pages
+    # if not args.pages:
+    #     print('[!] please set pages num to spider domains from searchengine')
+    #     sys.exit(0)
+
+    # default search pages: 1
+    pages = args.pages if args.pages else 1
 
     sleep = True if args.sleep else False
 
@@ -109,28 +176,29 @@ def main():
         bd = baidu_domain_spider()
         bdret = bd.baidu_domain_search(domain, page=pages, random_sleep=sleep)
         domains.extend(bdret[domain]['baidu'])
-        pprint(bdret)
+        result[domain].update({'BAIDU': bdret[domain]['baidu']})
 
     if args.bing:
         print('[*] search domains from bing.com')
         bi = bing_domain_spider()
         biret = bi.bing_domain_search(domain, page=pages, random_sleep=sleep)
         domains.extend(biret[domain]['bing'])
-        pprint(biret)
+        result[domain].update({'BING': biret[domain]['bing']})
 
     if args.google:
         print('[*] search domains from google.com')
         gg = google_domain_spider()
-        ggret = gg.google_domain_search(domain, page=pages, random_sleep=sleep)
+        ggret = gg.google_domain_search(domain, pages=pages, random_sleep=sleep)
+
         domains.extend(ggret[domain]['google'])
-        pprint(ggret)
+        result[domain].update({'GOOGLE': ggret[domain]['google']})
 
     if args.yahoo:
         print('[*] search domains from yahoo.com')
         yh = yahoo_domain_spider()
         yhret = yh.yahoo_domain_search(domain, page=pages, random_sleep=sleep)
         domains.extend(yhret[domain]['yahoo'])
-        pprint(yhret)
+        result[domain].update({'YAHOO': yhret[domain]['yahoo']})
 
     if args.censys:
         print('[*] search domains from censys.io')
@@ -141,15 +209,15 @@ def main():
         cs = censys_domain_spider(uid, secret)
         csret = cs.censys_domain_search(domain, page=2)
         domains.extend(csret[domain]['censys'])
-        pprint(csret)
+        result[domain].update({'CENSYS': csret[domain]['censys']})
 
     if args.github:
         print('[*] search domains from github.com')
         gh = github_domain_spider()
-        domain = 'google.com'
+        # domain = 'google.com'
         ghret = gh.github_domain_search(domain)
         domains.extend(ghret[domain]['github'])
-        pprint(ghret)
+        result[domain].update({'GITHUB': ghret[domain]['github']})
 
     if args.netcraft:
         print('[*] search domains from netcraft.net')
@@ -157,7 +225,7 @@ def main():
         ntret = nt.netcraft_domain_search(domain, page=pages,
                                           random_sleep=sleep)
         domains.extend(ntret[domain]['netcraft'])
-        pprint(ntret)
+        result[domain].update({'NETCRAFT': ntret[domain]['netcraft']})
 
     if args.zoomeye:
         print('[*] search domains from zoomeye.org')
@@ -168,11 +236,15 @@ def main():
         zms = zoomeye_domain_spider(zoomeye_user, zoomeye_pass)
         zmret = zms.zoomeye_domain_search(domain)
         domains.extend(zmret[domain]['zoomeye'])
-        pprint(zmret)
+        result[domain].update({'ZOOMEYE': zmret[domain]['zoomeye']})
 
     print('[+] all domains as follow:')
     pprint(domains)
-    return domains
+
+    print('[+] all domains records:')
+    print(result)
+
+    return domains, result
 
 
 if __name__ == '__main__':
