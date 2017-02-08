@@ -99,7 +99,7 @@ class google_domain_spider(google):
         """parse domains from google spider results"""
         dork = "site:{}".format(domain)
         regex = re.compile('[a-zA-Z0-9]+\.{}'.format(domain), re.I | re.M)
-        results = self.google_dork_search(dork, page=page, random_sleep=True)
+        results = self.google_dork_search(dork, page=pages, random_sleep=True)
 
         data = results[dork]
         gg_domains = []
