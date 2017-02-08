@@ -174,7 +174,10 @@ class idns(object):
         nameservers = self.query_NS(domain)[domain]['NS']
         data = []
         for nameserver in nameservers:
+            # dns.zone.from_xfr raise an exception: No answer or RRset not for qname
             resp = dns.zone.from_xfr(dns.query.xfr(nameserver, domain))
+            # If exception occurs, program exits here.
+
             if resp:
                 data = [resp.to_text()]
                 break
