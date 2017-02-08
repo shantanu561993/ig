@@ -12,7 +12,7 @@ class idns_bruteforce(idns, GeventWorker):
         self.domain = domain
         self.domains = []
         self.subdomains_wd = open(subdomains_wd)
-        self.dns_wildcard(self.domain)  # check dns wildcard
+        # self.dns_wildcard(self.domain)  # check dns wildcard
 
     def fake_job(self):
         """Custom job"""
