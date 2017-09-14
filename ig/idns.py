@@ -38,7 +38,7 @@ class idns(object):
 
         if ns_server:
             self._idns = dns.resolver.Resolver(configure=False)
-            self._idns.nameservers = ns_server
+            self._idns.nameservers = [ns_server]
         else:
             self._idns = dns.resolver.Resolver(configure=True)
 
@@ -52,8 +52,8 @@ class idns(object):
         result = None
         try:
             result = self._idns.query(*args, **kwds)
-        except:
-            pass
+        except Exception as err:
+            print(str(err))
         return result
 
     def dns_wildcard(self, domain):
