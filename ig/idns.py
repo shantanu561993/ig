@@ -99,7 +99,7 @@ class idns(object):
         data = [_.address
                 for _answer in resp.response.answer
                 for _ in _answer
-                if _.rdtype == dns.rdatatype.A] if resp else []
+                if _.rdtype == dns.rdatatype.AAAA] if resp else []
         return {domain: {'AAAA': data}}
 
     def query_CNAME(self, domain):
