@@ -54,7 +54,8 @@ class yahoo(searchengine):
     def parse_yahoo_url(self, url):
         """parse link from yahoo href"""
         if '/RU=' in url:  # parse
-            regex = re.compile('/RU=([^\']+)/RK=0')
+            # regex = re.compile('/RU=([^\']+)/RK=0')
+            regex = re.compile('.*/RU=([^\']+)/RK=')
             url = regex.findall(url)[0]
         url = requests.utils.unquote(url)
         return url
